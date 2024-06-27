@@ -5,10 +5,13 @@ import dotenv from "dotenv";
 const app = express();
 app.use(express.json());
 dotenv.config();
-const port = process.env.PORT;
+const port = process.env.PORT||8080;
 console.log(process.env.FRONT_END);
 app.use(cors({ origin: process.env.FRONT_END }));
 
+app.get('/', (req, res) => {
+  res.send(`<h1>Welcome to my Capstone backend</h1>`);
+});
 
 app.listen(port, () => {
     console.log(`App is running on port: ${port}`);
