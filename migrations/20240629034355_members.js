@@ -18,12 +18,16 @@ export const up = function (knex) {
         .references('teams.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
+      member.string('username').notNullable();
+      member.string('password').notNullable();
       member.string('member_name').notNullable();
       member.string('member_title').notNullable();
       member.string('member_email').notNullable();
       member.string('member_phone').notNullable();
       member.string('member_address').notNullable();
+      member.string('isBossOrNot').notNullable();
       member.string('isManagerOrNot').notNullable();
+      member.string('isTeamLeadOrNot').notNullable();
       member.timestamp('created_at').defaultTo(knex.fn.now());
       member.timestamp('updated_at').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
     });
