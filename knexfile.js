@@ -1,8 +1,7 @@
 import dotenv from "dotenv";
 
 
-dotenv.config({ path: "./env" });
-console.log(process.env.DB_LOCAL_DBNAME)
+dotenv.config();
 
 export default  {
   client: "mysql2",
