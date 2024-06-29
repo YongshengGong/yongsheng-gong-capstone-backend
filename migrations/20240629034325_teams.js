@@ -7,9 +7,9 @@ export const up = function (knex) {
     return knex.schema.createTable('teams', (team) => {
       team.increments('id').primary();
       team
-        .integer('cohort_id')
+        .integer('company_id')
         .unsigned()
-        .references('cohorts.id')
+        .references('companies.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
       team.string('team_name').notNullable();
