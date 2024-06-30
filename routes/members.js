@@ -89,6 +89,23 @@ memberRouter.route("/:id")
         }
     })
 
+    memberRouter.route("/login")
+    .post(async (req, res) => {
+        const members = await readMembers();
+        const selectedMember = members.find(member => {
+            return (member.username == req.body.username) && (member.password == req.body.password);
+        });
+        if (!selectedMember) {
+            return res
+                .status(404)
+                .json({ message: "Invalid username or password" });
+        }
+        else {
+            res.status(200).json(selectedMember);
+        }
+    })
+
+
 
 
 export default memberRouter;
