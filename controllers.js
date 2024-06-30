@@ -4,7 +4,7 @@ const knex = initKnex(configuration);
 
 const readCompanies = async() => {
       const data = await knex
-        .from("warehouses")
+        .from("companies")
         .select(
           "companies.id",
           "companies.company_name"
@@ -18,7 +18,7 @@ const readTeams = async() => {
         .select(
           "teams.id",
           "teams.company_id",
-          "teams.company_name"
+          "teams.team_name"
         );
       return data;
   };

@@ -10,6 +10,7 @@ app.use(express.json());
 dotenv.config();
 const port = process.env.PORT;
 app.use(cors({ origin: process.env.FRONT_END }));
+console.log(process.env.FRONT_END)
 
 app.get('/', (req, res) => {
   res.send(`<h1>Welcome to my Capstone backend</h1>`);
