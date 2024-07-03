@@ -6,12 +6,10 @@ dotenv.config();
 export default  {
   client: "mysql2",
   connection: {
-    host: "127.0.0.1",
-    port: 3306,
-    user: process.env.DB_LOCAL_USER,
-    password: process.env.DB_LOCAL_PASSWORD,
-    database: process.env.DB_LOCAL_DBNAME,
-    charset: "utf8"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DB_DATABASE,
   },
 };
 
