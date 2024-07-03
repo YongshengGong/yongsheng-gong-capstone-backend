@@ -37,8 +37,6 @@ const readMembers = async() => {
           "members.member_email",
           "members.member_phone",
           "members.member_address",
-          "members.isBossOrNot",
-          "members.isManagerOrNot",
           "members.isTeamLeadOrNot",
           "members.created_at"
         );
