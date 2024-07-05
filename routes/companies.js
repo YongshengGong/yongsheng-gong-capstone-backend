@@ -18,8 +18,14 @@ companyRouter.route("/")
     })
     .post(async (req, res) => {
         try {
+            const companies = await readCompanies();
+            if(companies.find(company=>company.company_name==req.body.company_name)){
+              res.status(400).json({ message: "This company already exists!" });
+            }
+            else{
             await knex("companies").insert(req.body);
             res.status(201).json(req.body);
+            }
         }
         catch (error) {
             res.status(500).json({ message: "Error adding a new company" });
