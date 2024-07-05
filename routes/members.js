@@ -18,8 +18,14 @@ memberRouter.route("/")
     })
     .post(async (req, res) => {
         try {
+            const members = await readMembers();
+            if(members.find(member=>member.username==req.body.username)){
+                res.status(400).json({ message: "This username already exists!" })
+            }
+            else{
             await knex("members").insert(req.body);
             res.status(201).json(req.body);
+            }
         }
         catch (error) {
             res.status(500).json({ message: "Error adding a new member" });
