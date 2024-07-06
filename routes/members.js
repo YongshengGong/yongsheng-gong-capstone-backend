@@ -2,9 +2,14 @@ import express from "express";
 import initKnex from "knex";
 import configuration from "../knexfile.js";
 import { readMembers } from "../controllers.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
 const knex = initKnex(configuration);
 const memberRouter = express.Router();
+dotenv.config();
+
 
 memberRouter.route("/")
     .get(async (_req, res) => {
@@ -18,14 +23,21 @@ memberRouter.route("/")
     })
     .post(async (req, res) => {
         try {
-            const members = await readMembers();
-            if(members.find(member=>member.username==req.body.username)){
-                res.status(400).json({ message: "This username already exists!" })
+            let hashedPassword = bcrypt.hashSync(req.body.password, 6);
+            let user = {
+                company_id: req.body.company_id,
+                team_id: req.body.team_id,
+                username: req.body.username,
+                password: hashedPassword,
+                member_name: req.body.member_name,
+                member_title: req.body.member_title,
+                member_email: req.body.member_email,
+                member_phone: req.body.member_phone,
+                member_address: req.body.member_address,
+                isTeamLeadOrNot: req.body.isTeamLeadOrNot
             }
-            else{
-            await knex("members").insert(req.body);
-            res.status(201).json(req.body);
-            }
+            await knex("members").insert(user);
+            res.status(201).json(user);
         }
         catch (error) {
             res.status(500).json({ message: "Error adding a new member" });
@@ -64,9 +76,10 @@ memberRouter.route("/:id")
         }
         else {
             try {
+                let user = {...req.body,password:bcrypt.hashSync(req.body.password,6)};
                 await knex("members")
                     .where("id", req.params.id)
-                    .update(req.body);
+                    .update(user);
                 res.status(200).json(req.body);
             }
             catch (e) {
@@ -95,11 +108,11 @@ memberRouter.route("/:id")
         }
     })
 
-    memberRouter.route("/login")
+memberRouter.route("/login")
     .post(async (req, res) => {
         const members = await readMembers();
         const selectedMember = members.find(member => {
-            return (member.username == req.body.username) && (member.password == req.body.password);
+            return (member.username == req.body.username) && (bcrypt.compareSync(req.body.password,member.password));
         });
         if (!selectedMember) {
             return res
@@ -107,7 +120,8 @@ memberRouter.route("/:id")
                 .json({ message: "Invalid username or password" });
         }
         else {
-            res.status(200).json(selectedMember);
+            let token = jwt.sign(selectedMember, process.env.JWT_SECRET, { expiresIn: "12h" });
+            res.status(200).json({ token: token });
         }
     })
 

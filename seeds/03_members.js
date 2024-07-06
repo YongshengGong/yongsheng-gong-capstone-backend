@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -10,7 +11,7 @@ export async function seed(knex) {
       company_id: 1,
       team_id: 1,
       username: "peter123",
-      password: "peter123",
+      password: bcrypt.hashSync("peter123", 6),
       member_name: "Peter",
       member_title: "Boss",
       member_email: "",
@@ -23,7 +24,7 @@ export async function seed(knex) {
       company_id: 1,
       team_id: 2,
       username: "jack123",
-      password: "jack123",
+      password: bcrypt.hashSync("jack123", 6),
       member_name: "Jack",
       member_title: "",
       member_email: "Jack@gmail.com",
@@ -36,7 +37,7 @@ export async function seed(knex) {
       company_id: 1,
       team_id: 4,
       username: "john123",
-      password: "john123",
+      password: bcrypt.hashSync("john123", 6),
       member_name: "John",
       member_title: "",
       member_email: "John@gmail.com",
@@ -49,7 +50,7 @@ export async function seed(knex) {
       company_id: 2,
       team_id: 5,
       username: "justin123",
-      password: "justin123",
+      password: bcrypt.hashSync("justin123", 6),
       member_name: "Justin",
       member_title: "Boss",
       member_email: "",
@@ -62,7 +63,7 @@ export async function seed(knex) {
       company_id: 2,
       team_id: 6,
       username: "greg123",
-      password: "greg123",
+      password: bcrypt.hashSync("greg123", 6),
       member_name: "Greg",
       member_title: "",
       member_email: "Greg@gmail.com",
@@ -75,7 +76,7 @@ export async function seed(knex) {
       company_id: 2,
       team_id: 8,
       username: "tom123",
-      password: "tom123",
+      password: bcrypt.hashSync("tom123", 6),
       member_name: "Tom",
       member_title: "",
       member_email: "Tom@gmail.com",
