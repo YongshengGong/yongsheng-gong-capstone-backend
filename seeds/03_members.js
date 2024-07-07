@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from 'uuid';
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -37,7 +38,7 @@ export async function seed(knex) {
       company_id: 1,
       team_id: 4,
       username: "john123",
-      password: bcrypt.hashSync("john123", 6),
+      password: "john123",
       member_name: "John",
       member_title: "",
       member_email: "John@gmail.com",
@@ -76,7 +77,7 @@ export async function seed(knex) {
       company_id: 2,
       team_id: 8,
       username: "tom123",
-      password: bcrypt.hashSync("tom123", 6),
+      password: "tom123",
       member_name: "Tom",
       member_title: "",
       member_email: "Tom@gmail.com",
