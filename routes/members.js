@@ -1,7 +1,7 @@
 import express from "express";
 import initKnex from "knex";
 import configuration from "../knexfile.js";
-import { readMembers } from "../controllers.js";
+import { readMembers, readTeams } from "../controllers.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -23,21 +23,19 @@ memberRouter.route("/")
     })
     .post(async (req, res) => {
         try {
-            let hashedPassword = bcrypt.hashSync(req.body.password, 6);
-            let user = {
-                company_id: req.body.company_id,
-                team_id: req.body.team_id,
-                username: req.body.username,
-                password: hashedPassword,
-                member_name: req.body.member_name,
-                member_title: req.body.member_title,
-                member_email: req.body.member_email,
-                member_phone: req.body.member_phone,
-                member_address: req.body.member_address,
-                isTeamLeadOrNot: req.body.isTeamLeadOrNot
+            const teams = await readTeams();
+            let user = null;
+            if (teams.find(team => team.id == req.body.team_id).team_name == "Applicants") {
+                user = req.body;
+                await knex("members").insert(user);
+                res.status(201).json(user);
             }
-            await knex("members").insert(user);
-            res.status(201).json(user);
+            else {
+                let hashedPassword = bcrypt.hashSync(req.body.password, 6);
+                user = { ...req.body, password: hashedPassword };
+                await knex("members").insert(user);
+                res.status(201).json(user);
+            }
         }
         catch (error) {
             res.status(500).json({ message: "Error adding a new member" });
@@ -76,7 +74,7 @@ memberRouter.route("/:id")
         }
         else {
             try {
-                let user = {...req.body,password:bcrypt.hashSync(req.body.password,6)};
+                let user = { ...req.body, password: bcrypt.hashSync(req.body.password, 6) };
                 await knex("members")
                     .where("id", req.params.id)
                     .update(user);
@@ -112,7 +110,7 @@ memberRouter.route("/login")
     .post(async (req, res) => {
         const members = await readMembers();
         const selectedMember = members.find(member => {
-            return (member.username == req.body.username) && (bcrypt.compareSync(req.body.password,member.password));
+            return (member.username == req.body.username) && (bcrypt.compareSync(req.body.password, member.password));
         });
         if (!selectedMember) {
             return res
