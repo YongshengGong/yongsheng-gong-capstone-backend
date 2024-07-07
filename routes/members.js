@@ -108,27 +108,37 @@ memberRouter.route("/:id")
 
 memberRouter.route("/login")
     .post(async (req, res) => {
-        const members = await readMembers();
-        const teams = await readTeams();
-        let selectedMember = null;
-        if (teams.find(team => team.id == req.body.team_id).team_name == "Applicants"){
-            selectedMember = members.find(member => {
-                return (member.username == req.body.username) && (req.body.password == member.password);
-            });
+        try {
+            const members = await readMembers();
+            const teams = await readTeams();
+            let selectedMember = null;
+            let teamName = null;
+            let incomingMember = members.find(member => member.username == req.body.username);
+            if (incomingMember) {
+                teamName = teams.find(team => team.id == incomingMember.team_id).team_name;
+                if (teamName == "Applicants") {
+                    selectedMember = members.find(member => {
+                        return (member.username == req.body.username) && (req.body.password == member.password);
+                    });
+                    let token = jwt.sign(selectedMember, process.env.JWT_SECRET, { expiresIn: "12h" });
+                    res.status(200).json({ token: token });
+                }
+                else {
+                    selectedMember = members.find(member => {
+                        return (member.username == req.body.username) && (bcrypt.compareSync(req.body.password, member.password));
+                    });
+                    let token = jwt.sign(selectedMember, process.env.JWT_SECRET, { expiresIn: "12h" });
+                    res.status(200).json({ token: token });
+                }
+            }
+            else {
+                return res
+                    .status(404)
+                    .json({ message: "Invalid username" });
+            }
         }
-        else{
-        selectedMember = members.find(member => {
-            return (member.username == req.body.username) && (bcrypt.compareSync(req.body.password, member.password));
-        });
-    }
-        if (!selectedMember) {
-            return res
-                .status(404)
-                .json({ message: "Invalid username or password" });
-        }
-        else {
-            let token = jwt.sign(selectedMember, process.env.JWT_SECRET, { expiresIn: "12h" });
-            res.status(200).json({ token: token });
+        catch (e) {
+            res.status(500).json({ message: "Error logging in" });
         }
     })
 
