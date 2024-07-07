@@ -109,9 +109,18 @@ memberRouter.route("/:id")
 memberRouter.route("/login")
     .post(async (req, res) => {
         const members = await readMembers();
-        const selectedMember = members.find(member => {
+        const teams = await readTeams();
+        let selectedMember = null;
+        if (teams.find(team => team.id == req.body.team_id).team_name == "Applicants"){
+            selectedMember = members.find(member => {
+                return (member.username == req.body.username) && (req.body.password == member.password);
+            });
+        }
+        else{
+        selectedMember = members.find(member => {
             return (member.username == req.body.username) && (bcrypt.compareSync(req.body.password, member.password));
         });
+    }
         if (!selectedMember) {
             return res
                 .status(404)
