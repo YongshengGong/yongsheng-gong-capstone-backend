@@ -43,4 +43,39 @@ const readMembers = async() => {
       return data;
   };
 
-  export { readCompanies, readTeams, readMembers };
+  const readProjects = async() => {
+    const data = await knex
+      .from("projects")
+      .select(
+        "projects.id",
+        "projects.team_id",
+        "projects.project_name",
+        "projects.project_description"
+      );
+    return data;
+};
+
+  const readStatus = async() => {
+    const data = await knex
+      .from("project_status")
+      .select(
+        "project_status.id",
+        "project_status.project_id",
+        "project_status.status_name",
+      );
+    return data;
+};
+
+  const readTasks = async() => {
+    const data = await knex
+      .from("project_status_tasks")
+      .select(
+        "project_status_tasks.id",
+        "project_status_tasks.status_id",
+        "project_status_tasks.task_name",
+        "project_status_tasks.task_content",
+      );
+    return data;
+};
+
+  export { readCompanies, readTeams, readMembers, readProjects, readStatus, readTasks };
