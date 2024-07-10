@@ -18,10 +18,10 @@ projectsRouter.route("/")
     })
     .post(async (req, res) => {
         try {
-            await knex("projects").insert(req.body);
-            res.status(201).json(req.body);
-        }
-        catch (error) {
+            const [insertId] = await knex("projects").insert(req.body);
+            const newlyAddedProject = await knex("projects").where({ id: insertId }).first();
+            res.status(201).json(newlyAddedProject);
+        } catch (error) {
             res.status(500).json({ message: "Error adding a new project" });
         }
     })

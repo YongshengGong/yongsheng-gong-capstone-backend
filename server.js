@@ -17,6 +17,7 @@ console.log(process.env.FRONT_END)
 
 app.get('/', (req, res) => {
   res.send(`<h1>Welcome to my Capstone backend</h1>`);
+  console.log(6);
 });
 
 
