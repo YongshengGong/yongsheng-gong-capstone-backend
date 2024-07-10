@@ -14,7 +14,7 @@ dotenv.config();
 memberRouter.route("/")
     .get(async (_req, res) => {
         try {
-            const members = await readMembers();
+            const members = await readMembers(); 
             res.status(200).json(members);
         }
         catch (error) {
